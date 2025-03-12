@@ -17,6 +17,8 @@ services:
       ADMIN_JWT_SECRET: ${ADMIN_JWT_SECRET}
       APP_KEYS: ${APP_KEYS}
       NODE_ENV: ${NODE_ENV}
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
     volumes:
       - ./backend/config:/opt/app/config
       - ./backend/src:/opt/app/src
@@ -49,9 +51,20 @@ services:
       - "5432:5432"
     networks:
       - strapi
-
+  
+  cache:
+    image: redis:6.2-alpine
+    restart: always
+    ports:
+      - '6379:6379'
+    command: redis-server --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
+    volumes: 
+      - cache:/data
+  
 volumes:
   strapi-data:
+  cache:
+    driver: local
 
 networks:
   strapi:
