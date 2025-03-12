@@ -32,6 +32,7 @@ services:
       - strapi
     depends_on:
       - strapiDB
+      - cache
 
   strapiDB:
     container_name: strapiDB
@@ -60,6 +61,15 @@ services:
     command: redis-server --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
     volumes: 
       - cache:/data
+  
+  mailcatcher:
+    restart: on-failure
+    image: dockage/mailcatcher:0.9.0
+    ports:
+      - "1080:1080"
+      - "1025:1025"
+    networks:
+      - strapi
   
 volumes:
   strapi-data:
